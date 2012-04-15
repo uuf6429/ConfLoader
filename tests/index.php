@@ -1,6 +1,6 @@
 <?php
 
-	require_once '../CmsConfLoader/cmsconf.php';
+	require_once '../src/cmsconf.php';
 	
 	$tests_dir = dirname(__FILE__).DIRECTORY_SEPARATOR.'testdata'.DIRECTORY_SEPARATOR;
 	
