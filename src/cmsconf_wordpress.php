@@ -18,35 +18,24 @@
 			return false;
 		}
 		
-		protected $_version = '';
-		
 		protected $_config = array();
+		protected $_fname = '';
 		
-		public function __construct($filename, $filedata){
-			// find wordpress version
-			$vfile = dirname($filename).DIRECTORY_SEPARATOR.'wp-includes'.DIRECTORY_SEPARATOR.'version.php';
-			if(file_exists($vfile)){
-				$fh = fopen($vfile, 'r');
-				$fd = fread($fh, 300);
-				fclose($fh);
-				preg_match('/\\$wp_version\\s*=\\s*\'([0-9\\.]*)\';/', $fd, $fd);
-				$this->_version = $fd[1];
-			}
+		public function __construct($__filename, $__filedata){
+			$this->_fname = $__filename;
 			// process wordpress config
-			do{ $cls = 'JConfig_'.mt_rand(); }while(class_exists($cls));
-			$replace = array(
-				'<?php' => '',
-				'define(' => __CLASS__.'::_rec_rec(',
-				'require_once(ABSPATH . ' => __CLASS__.'::_rec_nop(',
-			);
-			$filedata = str_replace(array_keys($replace), array_values($replace), $filedata);
 			ob_start();
 			self::_rec_bgn();
-			eval($filedata);
-			$this->_config = self::_rec_end();
-			$this->_config['table_prefix'] = $table_prefix;
+			eval(str_replace(
+				array('<?php', 'define(', 'require_once(ABSPATH . '),
+				array('', __CLASS__.'::_rec_rec(', __CLASS__.'::_rec_nop('),
+				$__filedata
+			));
+			$this->_config = array_merge(self::_rec_end(), get_defined_vars());
+			unset($this->_config['__filename']);
+			unset($this->_config['__filedata']);
 			$buf = ob_end_clean();
-			if($buf!=''); // error?!
+			if($buf!=''); // TODO Throw warning.
 		}
 		
 		public function type(){
@@ -54,7 +43,18 @@
 		}
 		
 		public function version(){
-			return $this->_version;
+			static $version = null;
+			if(!$version){
+				$vfile = dirname($this->_fname).DIRECTORY_SEPARATOR.'wp-includes'.DIRECTORY_SEPARATOR.'version.php';
+				if(file_exists($vfile)){
+					$fh = fopen($vfile, 'r');
+					$fd = fread($fh, 300);
+					fclose($fh);
+					preg_match('/\\$wp_version\\s*=\\s*\'([0-9\\.]*)\';/', $fd, $fd);
+					$version = $fd[1];
+				}
+			}
+			return $version;
 		}
 
 		public function raw($name, $default=null){

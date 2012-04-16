@@ -16,7 +16,8 @@
 			'type'    => $conf->type(),
 			'version' => $conf->version(),
 			'db'      => $conf->db(),
-			'conf'    => $conf->ftp(),
+			'ftp'     => $conf->ftp(),
+			'raw'     => $conf->rawlist(),
 		));
 	}
 	
