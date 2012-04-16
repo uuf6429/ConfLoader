@@ -22,6 +22,7 @@
 		protected $_fname = '';
 		
 		public function __construct($__filename, $__filedata){
+			// TODO Constructor should not be doing any work.
 			$this->_fname = $__filename;
 			// process wordpress config
 			ob_start();
@@ -35,7 +36,9 @@
 			unset($this->_config['__filename']);
 			unset($this->_config['__filedata']);
 			$buf = ob_end_clean();
-			if($buf!=''); // TODO Throw warning.
+			if($buf!=''){
+				trigger_error('Some data has been written unexpectedly during parsing: '.$buf, E_USER_WARNING);
+			}
 		}
 		
 		public function type(){
