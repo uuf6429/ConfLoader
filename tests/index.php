@@ -6,7 +6,7 @@
 	
 	ob_start();
 	
-	echo 'Tests Directory: `'.$tests_dir.'`'.PHP_EOL;
+	echo 'Tests Directory: '.$tests_dir.PHP_EOL;
 
 	foreach(glob($tests_dir.'*') as $path){
 		$conf = CmsConf($path);

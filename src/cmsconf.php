@@ -3,7 +3,7 @@
 	$cwd = dirname(__FILE__).DIRECTORY_SEPARATOR;
 
 	// Load base class
-	require_once($cwd.'cmsconf.base.php');
+	require_once($cwd.'cmsconf_base.php');
 
 	/**
 	 * CMS configuration loader class.
@@ -71,7 +71,7 @@
 	}
 	
 	// Load the rest of classes
-	foreach(glob($cwd.'cmsconf.*.php') as $file){
+	foreach(glob($cwd.'cmsconf_*.php') as $file){
 		$adapter = require_once($file);
 		if($adapter && $adapter!==true){
 			CmsConf::$adapters[] = $adapter;
